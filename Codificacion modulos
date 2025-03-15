@@ -1,0 +1,430 @@
+"""
+Sistema de Gestión
+==================
+Autor: Claude
+Fecha: 14/03/2025
+Versión: 1.0.0
+
+Este sistema implementa un módulo de gestión basado en los siguientes artefactos:
+- Diagrama de clases
+- Diagramas de casos de uso
+- Historias de usuario
+- Diseños y prototipos
+- Informe técnico de plan de trabajo
+
+El sistema sigue los estándares de codificación PEP 8 y utiliza Git para control de versiones.
+"""
+
+import datetime
+import logging
+from typing import List, Dict, Optional, Union
+from dataclasses import dataclass
+from abc import ABC, abstractmethod
+
+# Configuración del sistema de logging
+logging.basicConfig(
+    filename='sistema_gestion.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger('sistema_gestion')
+
+# Constantes del sistema
+VERSION = "1.0.0"
+AUTOR = "Claude"
+FECHA_CREACION = "14/03/2025"
+
+
+@dataclass
+class Usuario:
+    """
+    Clase que representa un usuario del sistema.
+    Basada en el diagrama de clases y casos de uso.
+    """
+    id: int
+    nombre: str
+    apellido: str
+    email: str
+    rol: str
+    fecha_registro: datetime.datetime = datetime.datetime.now()
+    activo: bool = True
+
+    def nombre_completo(self) -> str:
+        """Retorna el nombre completo del usuario."""
+        return f"{self.nombre} {self.apellido}"
+    
+    def __str__(self) -> str:
+        return f"Usuario(id={self.id}, nombre={self.nombre_completo()}, rol={self.rol})"
+
+
+class Proyecto:
+    """
+    Clase que representa un proyecto en el sistema.
+    Implementa los requisitos identificados en las historias de usuario.
+    """
+    def __init__(self, 
+                 id: int, 
+                 nombre: str, 
+                 descripcion: str, 
+                 fecha_inicio: datetime.datetime,
+                 fecha_fin: Optional[datetime.datetime] = None):
+        """
+        Inicializa un nuevo proyecto.
+        
+        Args:
+            id: Identificador único del proyecto
+            nombre: Nombre del proyecto
+            descripcion: Descripción detallada del proyecto
+            fecha_inicio: Fecha de inicio del proyecto
+            fecha_fin: Fecha de finalización prevista (opcional)
+        """
+        self.id = id
+        self.nombre = nombre
+        self.descripcion = descripcion
+        self.fecha_inicio = fecha_inicio
+        self.fecha_fin = fecha_fin
+        self.tareas: List[Tarea] = []
+        self.miembros: List[Usuario] = []
+        self.estado = "Planificación"
+        
+        logger.info(f"Proyecto creado: {self.nombre} (ID: {self.id})")
+    
+    def agregar_miembro(self, usuario: Usuario) -> bool:
+        """
+        Agrega un miembro al proyecto.
+        
+        Args:
+            usuario: Usuario a agregar al proyecto
+            
+        Returns:
+            bool: True si se agregó correctamente, False si ya existía
+        """
+        if usuario not in self.miembros:
+            self.miembros.append(usuario)
+            logger.info(f"Usuario {usuario.nombre_completo()} agregado al proyecto {self.nombre}")
+            return True
+        return False
+    
+    def agregar_tarea(self, tarea: 'Tarea') -> None:
+        """
+        Agrega una tarea al proyecto.
+        
+        Args:
+            tarea: Tarea a agregar al proyecto
+        """
+        self.tareas.append(tarea)
+        logger.info(f"Tarea '{tarea.titulo}' agregada al proyecto {self.nombre}")
+    
+    def calcular_progreso(self) -> float:
+        """
+        Calcula el porcentaje de progreso del proyecto.
+        
+        Returns:
+            float: Porcentaje de progreso (0-100)
+        """
+        if not self.tareas:
+            return 0.0
+        
+        tareas_completadas = sum(1 for tarea in self.tareas if tarea.estado == "Completada")
+        return (tareas_completadas / len(self.tareas)) * 100
+    
+    def actualizar_estado(self) -> None:
+        """Actualiza el estado del proyecto basado en el progreso de las tareas."""
+        progreso = self.calcular_progreso()
+        
+        if progreso == 0:
+            self.estado = "Planificación"
+        elif progreso < 100:
+            self.estado = "En progreso"
+        else:
+            self.estado = "Completado"
+            
+        logger.info(f"Estado del proyecto {self.nombre} actualizado a: {self.estado}")
+    
+    def __str__(self) -> str:
+        return f"Proyecto(id={self.id}, nombre={self.nombre}, estado={self.estado}, progreso={self.calcular_progreso():.1f}%)"
+
+
+class Tarea:
+    """
+    Clase que representa una tarea dentro de un proyecto.
+    Basada en las historias de usuario y el diagrama de clases.
+    """
+    def __init__(self, 
+                 id: int, 
+                 titulo: str, 
+                 descripcion: str, 
+                 prioridad: str,
+                 responsable: Optional[Usuario] = None):
+        """
+        Inicializa una nueva tarea.
+        
+        Args:
+            id: Identificador único de la tarea
+            titulo: Título descriptivo de la tarea
+            descripcion: Descripción detallada de la tarea
+            prioridad: Nivel de prioridad ('Alta', 'Media', 'Baja')
+            responsable: Usuario responsable de la tarea (opcional)
+        """
+        self.id = id
+        self.titulo = titulo
+        self.descripcion = descripcion
+        self.prioridad = prioridad
+        self.responsable = responsable
+        self.estado = "Pendiente"
+        self.fecha_creacion = datetime.datetime.now()
+        self.fecha_finalizacion: Optional[datetime.datetime] = None
+        self.comentarios: List[Dict] = []
+        
+        logger.info(f"Tarea creada: {self.titulo} (ID: {self.id})")
+    
+    def asignar_responsable(self, usuario: Usuario) -> None:
+        """
+        Asigna un responsable a la tarea.
+        
+        Args:
+            usuario: Usuario a asignar como responsable
+        """
+        self.responsable = usuario
+        logger.info(f"Responsable asignado a tarea {self.id}: {usuario.nombre_completo()}")
+    
+    def cambiar_estado(self, nuevo_estado: str) -> None:
+        """
+        Cambia el estado de la tarea.
+        
+        Args:
+            nuevo_estado: Nuevo estado de la tarea ('Pendiente', 'En progreso', 'En revisión', 'Completada')
+        """
+        estados_validos = ['Pendiente', 'En progreso', 'En revisión', 'Completada']
+        
+        if nuevo_estado not in estados_validos:
+            raise ValueError(f"Estado inválido. Debe ser uno de: {', '.join(estados_validos)}")
+        
+        self.estado = nuevo_estado
+        
+        if nuevo_estado == 'Completada':
+            self.fecha_finalizacion = datetime.datetime.now()
+            
+        logger.info(f"Estado de tarea {self.id} actualizado a: {nuevo_estado}")
+    
+    def agregar_comentario(self, usuario: Usuario, texto: str) -> None:
+        """
+        Agrega un comentario a la tarea.
+        
+        Args:
+            usuario: Usuario que realiza el comentario
+            texto: Contenido del comentario
+        """
+        comentario = {
+            'usuario': usuario,
+            'texto': texto,
+            'fecha': datetime.datetime.now()
+        }
+        self.comentarios.append(comentario)
+        logger.info(f"Comentario agregado a tarea {self.id} por {usuario.nombre_completo()}")
+    
+    def __str__(self) -> str:
+        responsable_nombre = self.responsable.nombre_completo() if self.responsable else "No asignado"
+        return f"Tarea(id={self.id}, titulo={self.titulo}, estado={self.estado}, responsable={responsable_nombre})"
+
+
+class ArtefactoSoftware(ABC):
+    """
+    Clase abstracta que representa un artefacto del ciclo de vida del software.
+    Cumple con el diseño establecido en el informe técnico.
+    """
+    def __init__(self, 
+                 id: int, 
+                 nombre: str, 
+                 descripcion: str, 
+                 version: str,
+                 autor: Usuario):
+        """
+        Inicializa un nuevo artefacto.
+        
+        Args:
+            id: Identificador único del artefacto
+            nombre: Nombre del artefacto
+            descripcion: Descripción del artefacto
+            version: Versión actual del artefacto
+            autor: Usuario que creó el artefacto
+        """
+        self.id = id
+        self.nombre = nombre
+        self.descripcion = descripcion
+        self.version = version
+        self.autor = autor
+        self.fecha_creacion = datetime.datetime.now()
+        self.ultima_modificacion = self.fecha_creacion
+        self.historial_versiones = [{
+            'version': version,
+            'fecha': self.fecha_creacion,
+            'autor': autor
+        }]
+        
+        logger.info(f"Artefacto creado: {self.nombre} (ID: {self.id}, Tipo: {self.__class__.__name__})")
+    
+    def actualizar_version(self, nueva_version: str, autor: Usuario) -> None:
+        """
+        Actualiza la versión del artefacto.
+        
+        Args:
+            nueva_version: Nueva versión del artefacto
+            autor: Usuario que realiza la actualización
+        """
+        self.version = nueva_version
+        self.ultima_modificacion = datetime.datetime.now()
+        
+        self.historial_versiones.append({
+            'version': nueva_version,
+            'fecha': self.ultima_modificacion,
+            'autor': autor
+        })
+        
+        logger.info(f"Artefacto {self.id} actualizado a versión {nueva_version} por {autor.nombre_completo()}")
+    
+    @abstractmethod
+    def validar(self) -> bool:
+        """
+        Valida la integridad y coherencia del artefacto.
+        
+        Returns:
+            bool: True si el artefacto es válido, False en caso contrario
+        """
+        pass
+    
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}(id={self.id}, nombre={self.nombre}, version={self.version})"
+
+
+class DiagramaClases(ArtefactoSoftware):
+    """
+    Clase que representa un diagrama de clases.
+    """
+    def __init__(self, 
+                 id: int, 
+                 nombre: str, 
+                 descripcion: str, 
+                 version: str,
+                 autor: Usuario,
+                 clases: List[Dict] = None):
+        """
+        Inicializa un nuevo diagrama de clases.
+        
+        Args:
+            id: Identificador único del diagrama
+            nombre: Nombre del diagrama
+            descripcion: Descripción del diagrama
+            version: Versión actual del diagrama
+            autor: Usuario que creó el diagrama
+            clases: Lista de clases del diagrama (opcional)
+        """
+        super().__init__(id, nombre, descripcion, version, autor)
+        self.clases = clases or []
+        self.relaciones = []
+    
+    def agregar_clase(self, 
+                     nombre: str, 
+                     atributos: List[Dict], 
+                     metodos: List[Dict]) -> None:
+        """
+        Agrega una clase al diagrama.
+        
+        Args:
+            nombre: Nombre de la clase
+            atributos: Lista de atributos de la clase
+            metodos: Lista de métodos de la clase
+        """
+        clase = {
+            'nombre': nombre,
+            'atributos': atributos,
+            'metodos': metodos
+        }
+        self.clases.append(clase)
+        logger.info(f"Clase '{nombre}' agregada al diagrama {self.nombre}")
+    
+    def agregar_relacion(self, 
+                        tipo: str, 
+                        origen: str, 
+                        destino: str, 
+                        descripcion: Optional[str] = None) -> None:
+        """
+        Agrega una relación entre clases al diagrama.
+        
+        Args:
+            tipo: Tipo de relación ('Herencia', 'Asociación', 'Agregación', 'Composición')
+            origen: Nombre de la clase origen
+            destino: Nombre de la clase destino
+            descripcion: Descripción de la relación (opcional)
+        """
+        relacion = {
+            'tipo': tipo,
+            'origen': origen,
+            'destino': destino,
+            'descripcion': descripcion
+        }
+        self.relaciones.append(relacion)
+        logger.info(f"Relación {tipo} agregada entre {origen} y {destino}")
+    
+    def validar(self) -> bool:
+        """
+        Valida la integridad del diagrama de clases.
+        
+        Returns:
+            bool: True si el diagrama es válido, False en caso contrario
+        """
+        # Verificar que todas las clases referenciadas en relaciones existen
+        nombres_clases = [clase['nombre'] for clase in self.clases]
+        
+        for relacion in self.relaciones:
+            if relacion['origen'] not in nombres_clases:
+                logger.error(f"Clase origen '{relacion['origen']}' no existe en el diagrama")
+                return False
+            if relacion['destino'] not in nombres_clases:
+                logger.error(f"Clase destino '{relacion['destino']}' no existe en el diagrama")
+                return False
+        
+        return True
+
+
+class DiagramaCasosUso(ArtefactoSoftware):
+    """
+    Clase que representa un diagrama de casos de uso.
+    """
+    def __init__(self, 
+                 id: int, 
+                 nombre: str, 
+                 descripcion: str, 
+                 version: str,
+                 autor: Usuario):
+        """
+        Inicializa un nuevo diagrama de casos de uso.
+        
+        Args:
+            id: Identificador único del diagrama
+            nombre: Nombre del diagrama
+            descripcion: Descripción del diagrama
+            version: Versión actual del diagrama
+            autor: Usuario que creó el diagrama
+        """
+        super().__init__(id, nombre, descripcion, version, autor)
+        self.actores = []
+        self.casos_uso = []
+        self.relaciones = []
+    
+    def agregar_actor(self, nombre: str, descripcion: str) -> None:
+        """
+        Agrega un actor al diagrama.
+        
+        Args:
+            nombre: Nombre del actor
+            descripcion: Descripción del actor
+        """
+        actor = {
+            'nombre': nombre,
+            'descripcion': descripcion
+        }
+        self.actores.append(actor)
+        logger.info(f"Actor '{nombre}' agregado al diagrama {self.nombre}")
+    
+    def agregar_caso
