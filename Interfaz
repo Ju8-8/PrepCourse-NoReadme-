@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Time For Me - Supermercado Colombiano</title>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #FFC107;
+            --dark-color: #333;
+            --light-color: #f4f4f4;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            line-height: 1.6;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo span {
+            color: var(--secondary-color);
+        }
+        
+        /* Navigation */
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: var(--secondary-color);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/api/placeholder/1200/500') center/cover no-repeat;
+            color: white;
+            text-align: center;
+            padding: 6rem 2rem;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.8rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background 0.3s, transform 0.3s;
+        }
+        
+        .btn:hover {
+            background: #3d8b40;
+            transform: translateY(-3px);
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 4rem 0;
+            background-color: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .section-title p {
+            color: #777;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background: var(--light-color);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-card i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        /* Products Section */
+        .products {
+            padding: 4rem 0;
+            background-color: var(--light-color);
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .product-img {
+            height: 200px;
+            background: url('/api/placeholder/250/200') center/cover;
+        }
+        
+        .product-info {
+            padding: 1.5rem;
+        }
+        
+        .product-info h3 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-info .price {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
+        }
+        
+        .product-info .btn {
+            width: 100%;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        
+        /* About Section */
+        .about {
+            padding: 4rem 0;
+            background-color: white;
+        }
+        
+        .about-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        
+        .about-img {
+            height: 400px;
+            background: url('/api/placeholder/600/400') center/cover;
+            border-radius: 10px;
+        }
+        
+        .about-text h2 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .about-text p {
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Testimonials */
+        .testimonials {
+            padding: 4rem 0;
+            background-color: var(--light-color);
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .testimonial-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .testimonial-author img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 1rem;
+        }
+        
+        .author-info h4 {
+            margin-bottom: 0.3rem;
+        }
+        
+        .author-info small {
+            color: #777;
+        }
+        
+        /* Contact Section */
+        .contact {
+            padding: 4rem 0;
+            background-color: white;
+        }
+        
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+        
+        .contact-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .contact-info p {
+            margin-bottom: 1rem;
+        }
+        
+        .contact-info .info-item {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-info .info-item i {
+            margin-right: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .contact-form h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        textarea.form-control {
+            height: 150px;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+        
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+        }
+        
+        .footer-section p {
+            margin-bottom: 1rem;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-section ul li a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-section ul li a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+        
+        .social-links a:hover {
+            background-color: var(--primary-color);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .about-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .about-img {
+                order: -1;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">A Time For <span>Me</span></a>
+            <nav>
+                <ul>
+                    <li><a href="#">Inicio</a></li>
+                    <li><a href="#productos">Productos</a></li>
+                    <li><a href="#about">Nosotros</a></li>
+                    <li><a href="#contact">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Bienvenidos a A Time For Me</h1>
+            <p>Tu supermercado colombiano de confianza. Ofrecemos productos frescos y de alta calidad para cuidar de ti y de tu familia.</p>
+            <a href="#productos" class="btn">Ver Productos</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>¿Por qué elegirnos?</h2>
+                <p>Descubre las ventajas de hacer tus compras en A Time For Me</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-leaf"></i>
+                    <h3>Productos Frescos</h3>
+                    <p>Seleccionamos los mejores productos frescos directamente de agricultores locales colombianos.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-truck"></i>
+                    <h3>Envío Rápido</h3>
+                    <p>Entregamos tus compras en menos de 24 horas a cualquier parte de Colombia.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-tags"></i>
+                    <h3>Precios Justos</h3>
+                    <p>Ofrecemos precios competitivos y promociones exclusivas para nuestros clientes.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-heart"></i>
+                    <h3>Productos Locales</h3>
+                    <p>Apoyamos a productores colombianos y ofrecemos lo mejor de nuestra tierra.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products" id="productos">
+        <div class="container">
+            <div class="section-title">
+                <h2>Nuestros Productos</h2>
+                <p>Explora nuestra selección de productos de alta calidad</p>
+            </div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-img"></div>
+                    <div class="product-info">
+                        <h3>Frutas Frescas</h3>
+                        <p>Selección de frutas tropicales colombianas, orgánicas y de temporada.</p>
+                        <div class="price">Desde $5.000 COP</div>
+                        <a href="#" class="btn">Añadir al Carrito</a>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img"></div>
+                    <div class="product-info">
+                        <h3>Verduras Orgánicas</h3>
+                        <p>Verduras cultivadas sin pesticidas, directas del campo a tu mesa.</p>
+                        <div class="price">Desde $4.500 COP</div>
+                        <a href="#" class="btn">Añadir al Carrito</a>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img"></div>
+                    <div class="product-info">
+                        <h3>Café Colombiano</h3>
+                        <p>El mejor café de Colombia, cultivado en altitud y tostado a la perfección.</p>
+                        <div class="price">$18.000 COP</div>
+                        <a href="#" class="btn">Añadir al Carrito</a>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img"></div>
+                    <div class="product-info">
+                        <h3>Productos Lácteos</h3>
+                        <p>Lácteos frescos y derivados de la mejor calidad, de granjas certificadas.</p>
+                        <div class="price">Desde $7.500 COP</div>
+                        <a href="#" class="btn">Añadir al Carrito</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="about-container">
+                <div class="about-text">
+                    <h2>Sobre Nosotros</h2>
+                    <p>A Time For Me nació en 2010 como un pequeño supermercado familiar en Bogotá. Nuestra misión siempre ha sido ofrecer productos de alta calidad a precios justos, apoyando a los productores locales y promoviendo una alimentación saludable entre los colombianos.</p>
+                    <p>Hoy contamos con más de 15 sucursales en todo el país y una plataforma de compras online que nos permite llegar a más hogares colombianos, manteniendo nuestro compromiso con la frescura, la calidad y el servicio al cliente.</p>
+                    <p>En A Time For Me creemos que dedicar tiempo a uno mismo comienza por una alimentación consciente y saludable.</p>
+                    <a href="#" class="btn">Conoce Nuestra Historia</a>
+                </div>
+                <div class="about-img"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-title">
+                <h2>Lo Que Dicen Nuestros Clientes</h2>
+                <p>Experiencias de quienes confían en A Time For Me</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        <p>"Desde que descubrí A Time For Me, no compro en otro lugar. Sus productos son siempre frescos y de excelente calidad. El servicio a domicilio es rápido y eficiente."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="/api/placeholder/50/50" alt="Cliente">
+                        <div class="author-info">
+                            <h4>Carolina Rodríguez</h4>
+                            <small>Bogotá</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        <p>"Lo que más valoro de A Time For Me es su compromiso con los productores locales. Como agricultor, me siento valorado y apoyado. Es una relación comercial justa y transparente."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="/api/placeholder/50/50" alt="Cliente">
+                        <div class="author-info">
+                            <h4>Juan Pérez</h4>
+                            <small>Productor de Café</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        <p>"Su sección de productos orgánicos es la mejor de Colombia. He notado un cambio positivo en mi salud desde que compro exclusivamente en A Time For Me. ¡Totalmente recomendado!"</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="/api/placeholder/50/50" alt="Cliente">
+                        <div class="author-info">
+                            <h4>Luisa Martínez</h4>
+                            <small>Medellín</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2>Contáctanos</h2>
+                <p>Estamos aquí para ayudarte. No dudes en contactarnos para cualquier consulta.</p>
+            </div>
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>Información de Contacto</h3>
+                    <p>Estamos disponibles para atenderte de lunes a domingo, de 8:00 am a 8:00 pm.</p>
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <p>Calle 85 #15-32, Bogotá, Colombia</p>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-phone"></i>
+                        <p>+57 (1) 123-4567</p>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <p>info@atimeforme.com.co</p>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-clock"></i>
+                        <p>Lunes a Domingo: 8:00 am - 8:00 pm</p>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <h3>Envíanos un Mensaje</h3>
+                    <form>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Nombre Completo" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" class="form-control" placeholder="Correo Electrónico" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Asunto">
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-control" placeholder="Tu Mensaje" required></textarea>
+                        </div>
+                        <button type="submit" class="btn">Enviar Mensaje</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-section">
+                    <h3>A Time For Me</h3>
+                    <p>Tu supermercado colombiano de confianza. Comprometidos con la calidad, la frescura y el servicio desde 2010.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul>
+                        <li><a href="#">Inicio</a></li>
+                        <li><a href="#productos">Productos</a></li>
+                        <li><a href="#about">Nosotros</a></li>
+                        <li><a href="#contact">Contacto</a></li>
+                        <li><a href="#">Términos y Condiciones</a></li>
+                        <li><a href="#">Política de Privacidad</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Categorías</h3>
+                    <ul>
+                        <li><a href="#">Frutas y Verduras</a></li>
+                        <li><a href="#">Productos Lácteos</a></li>
+                        <li><a href="#">Panadería</a></li>
+                        <li><a href="#">Carnes y Pescados</a></li>
+                        <li><a href="#">Productos Orgánicos</a></li>
+                        <li><a href="#">Bebidas</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Boletín Informativo</h3>
+                    <p>Suscríbete para recibir nuestras ofertas y novedades.</p>
+                    <form>
+                        <div class="form-group">
+                            <input type="email" class="form-control" placeholder="Tu correo electrónico" required>
+                        </div>
+                        <button type="submit" class="btn">Suscribirse</button>
+                    </form>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 A Time For Me. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // JavaScript simple para mejorar la interactividad
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scrolling para los enlaces internos
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // Animación simple para los botones "Añadir al Carrito"
+            const cartButtons = document.querySelectorAll('.product-info .btn');
+            cartButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    this.textContent = '¡Añadido!';
+                    setTimeout(() => {
+                        this.textContent = 'Añadir al Carrito';
+                    }, 2000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
